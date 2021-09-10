@@ -1,0 +1,1 @@
+{SinOsc.ar(1000, mul: 0.1)}.play

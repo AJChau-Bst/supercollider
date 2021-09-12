@@ -316,8 +316,11 @@ if(num > 3, // This will take the false branch that is not defined
 
 // Write a function `~sparta` that always returns the number 300.
 
+(
 // Your code here
 
+~sparta = {300}
+)
 
 ~sparta.value()
 
@@ -325,8 +328,14 @@ if(num > 3, // This will take the false branch that is not defined
 // with three exclamation points.  String concatenation can be done with the `++`
 // operator.
 
+(
 // Your code here
 
+~excited = {
+    |str|
+    str ++ "!!!"
+}
+)
 
 ~excited.value("Hooray")
 
@@ -334,8 +343,14 @@ if(num > 3, // This will take the false branch that is not defined
 
 // Write a function called `~absValue` that returns the absolute value of a number.
 
+(
 // Your code here
 
+~absValue = {
+    arg num;
+    if(num < 0, {-1 * num}, {num})
+}
+)
 
 ~absValue.value(4)
 
@@ -344,8 +359,14 @@ if(num > 3, // This will take the false branch that is not defined
 // Write a function called `isSpeeding` that takes a number and prints out "Slow
 // down!" if the number is greater than 65 and does nothing otherwise.
 
+(
 // Your code here
 
+~isSpeeding = {
+    |speed|
+    if(speed > 65, {"Slow down".postln})
+}
+)
 
 ~isSpeeding.value(70)
 
@@ -353,8 +374,14 @@ if(num > 3, // This will take the false branch that is not defined
 
 // Write a recursive function `~fact` that computes the factorial of a number.
 
+(
 // Your code here
 
+~fact = {
+    |x|
+    if (x == 0, {1}, {x * ~fact.value(x - 1)})
+}
+)
 
 ~fact.value(4)
 
@@ -364,8 +391,17 @@ if(num > 3, // This will take the false branch that is not defined
 // number `i` and computes the `i`th fibonacci number.  Here's a little info on the
 // Fibonacci sequence: <https://en.wikipedia.org/wiki/Fibonacci_number>
 
+(
 // Your code here
 
+~fib = {
+    |i|
+    if((i == 0) || (i == 1),
+        {i},
+        {~fib.value(i - 1) + ~fib.value(i - 2)}
+    );
+}
+)
 
 ~fib.value(0) // should return 0
 
@@ -442,8 +478,7 @@ while({i < 4}, {
     i = i + 1
 });
 )
-//Notes
-//Local Variables must be declared at the top. Then function, i = 0. If 0 < 4, executes True branch. i.postln;, until i gets set into the value 4.
+
 (
 // This block of code does repeated string concatenation
 
@@ -552,7 +587,22 @@ for(1, 0, {|x| x.postln}) // 1 and 0 is printed!
 // 2200.  Your function `~partials` should print out `numPartials` partials of a
 // given frequency `fund` indicating the fundamental frequency of a note.
 
-// Your code here
+
+(
+~partials = {
+    arg numPartials, funds;
+
+	var i = 1;
+	var partials;
+
+
+	while({i <= numPartials},{
+		(i * funds).postln;
+		i = i + 1
+	});
+
+}
+	}
 
 
 ~partials.value(440, 5)
@@ -571,8 +621,21 @@ for(1, 0, {|x| x.postln}) // 1 and 0 is printed!
 // stating whether the character is a decimal digit and the `.size` method gets the
 // length of a string.
 
+(
 // Your code here
 
+~countNumsInString = {
+    |str|
+    var i = 0;
+    var count = 0;
+
+    while({i < str.size}, {
+        if(str[i].isDecDigit, {count = count + 1});
+        i = i + 1;
+    });
+    count
+}
+)
 
 ~countNumsInString.value("a12b")
 
@@ -628,8 +691,19 @@ for(1, 0, {|x| x.postln}) // 1 and 0 is printed!
 // Write a function called `~allPositive` that takes a list of numbers and returns
 // `true` if every element in the list is positive and `false` otherwise.
 
+(
 // Your code here
+~allPositive = {
+  arg numList;
+  var isPositive = true;
 
+  numList.do({
+    arg item;
+    if(item <= 0, {isPositive = false;})
+  });
+  isPositive
+}
+)
 
 ~allPositive.value([45, 3, 1])
 

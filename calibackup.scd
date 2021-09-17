@@ -204,7 +204,7 @@ the index operator [ ].
 (
 ~hasChar = {
     arg input, cha;
-    var bool;
+    var bool= False;
     for(0,input.size-1, {arg x;
         if (input.containsStringAt(x, cha.asString), {bool = True}, {})});
 	bool;
@@ -232,14 +232,16 @@ it's good to start thinking about this now.
 
 (
 ~gcf = {
-// Your code here
+	arg numone, numtwo;
+	gcd(numone,numtwo);
+	//i found this when reading documentation on arrays, which was actually kind of funny
 };
 )
 
 ~gcf.value(16, 6); // Should return 2
-~gcf.value(16, 27); // Should return 1
-~gcf.value(1071, 462); // Should return 21
-~gcf.value(12324, 120); // Should return 12
+//~gcf.value(16, 27); // Should return 1
+//~gcf.value(1071, 462); // Should return 21
+//~gcf.value(12324, 120); // Should return 12
 
 /*
 Write a function below called ~gcf_list that computes the greatest common factor from a list of numbers.
@@ -254,14 +256,26 @@ You should call your implementation of `~gcf` in `~gcf_list`.
 
 (
 ~gcf_list = {
-// Your code here
+	arg arr;
+	var len, counter = 1, currentgcf;
+	len = arr.size;
+	if ((len > 1), {currentgcf = ~gcf.value(arr[1], arr[2])},{currentgcf = arr[0]});
+	//len.postln;
+	currentgcf.postln;
 };
 )
+
 
 ~gcf_list.value([43, 7, 2]); // should return 1
 ~gcf_list.value([1024, 64, 128]); // should return 64
 ~gcf_list.value([75, 25, 45, 105]); // should return 5
 ~gcf_list.value([100]); // should return 100
+
+//while({len >= counter}, {
+		//currentgcf = ~gcf.value(currentgcf, arr[counter + 2]);
+		//counter = counter + 1;
+	//});
+
 
 /*************************
  * READING DOCUMENTATION *
@@ -308,20 +322,21 @@ Write a single line of code that returns a new array of only the odd numbers fro
 
 (
 var arr = [27, 1, 17, 4, 2, 9]; // should work for any array
-// Your single line of code here
 
+arr.do({arg i; if (i.odd, {i.postln})});
+// Your single line of code her
 )
+/* if( false, { "condition is TRUE".postln;}, {"condition is FALSE”.postln;});
 
-/*
 Write a single line of code that takes the array `arr` and returns a new
 array with all nesting removed.  For example you should return an array
 of [1, 2, 3, 4, 5] if the original array is [1, [2, [3, 4, [5]]]].
 */
 
+
 (
 var arr = [3, [4, 5], [[1, 2]]]; // should work for any array
-// Your single line of code here
-
+arr.flat.postln;
 )
 
 /*
@@ -332,7 +347,7 @@ string `str`
 (
 var str = "Testing"; // should work for any string
 // Your single line of code here
-
+str.reverse.postln;
 )
 
 /*
@@ -341,7 +356,7 @@ number from 1 to 100 (i.e., [1.0, 4.0, 9.0, ... 10000.0])
 */
 
 (
-// Your single line of code here
+Array.fill(100, { arg i; i.squared });
 )
 
 /*
@@ -351,10 +366,11 @@ regardless of case.
 
 (
 var str = "sEquOia"; // should work for any string here
-// Your single line of code here
+var count = 0;
+while({index < str.size}, {var index = 1, if(str[index].isVowel; {count = count + 1}); index = index + 1});
+count.postln;
+
 )
-
-
 /**********************
  * CHALLENGE EXERCISE *
  **********************/

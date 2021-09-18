@@ -366,11 +366,14 @@ regardless of case.
 
 (
 var str = "sEquOia"; // should work for any string here
-var count = 0;
-while({index < str.size}, {var index = 1, if(str[index].isVowel; {count = count + 1}); index = index + 1});
-count.postln;
+//var count = 0, index = 0;
+//while({index < str.size}, {if(str[index].isVowel, {count = count + 1}); index = index + 1});
+//count.postln;
 
+
+str.count({arg item, index; str[index].isVowel});
 )
+
 /**********************
  * CHALLENGE EXERCISE *
  **********************/
@@ -409,7 +412,7 @@ about the best way to solve this problem.
 	// Your code here
 };
 )
-
+// note name, octave number
 (
 ~arrayOfNotes = ['A4', 'C#3', 'Eb7', 'Gb2'];
 ~mapping = Dictionary.newFrom(List['C', 16.35, 'C#', 17.32, 'Db', 17.32, 'D', 18.35,

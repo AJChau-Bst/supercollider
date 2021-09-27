@@ -10,6 +10,7 @@
 {SinOsc.ar([400, 800],[0, pi], 0.2)}.play
 CmdPeriod.run
 
+
 /**************
  * Question 2 *
  **************/
@@ -29,33 +30,23 @@ CmdPeriod.run
 /**************
  * Question 3 *
  **************/
-
 (
 ~thirdPartials = {
-	arg fundFreq, fundAmp;
-	var harmonic, frequency = 300, amplitude;
-
-	amplitude = Array.fill(1, {harmonic ^ 3});
-	harmonic = Array.fill(20, {arg i; i * 3 + 1 });
-	//frequency = Array.fill(1, {harmonic * frequency});
-	harmonic.postln;
-	//frequency.postln;
-	amplitude.postln;
-
-
-	//while(count < 20),{
-		//count + 1;
-	}
-
-	//{SinOsc.ar(frequency,0, amplitude)}.play
-
+    arg fundFreq = 300, fundAmp = 0.2;
+    var numHarmonics = 20;
+    var sig = [0, 0];
+    for(1, numHarmonics, {
+        arg n; // harmonic number
+		fundAmp = (1/fundAmp);
+		sig = sig + (SinOsc.ar(fundFreq * n, 0, fundAmp**3)! 2);
+		n = (n * 3)+1;
+    });
+    sig // return value is the array for left/right speaker
+};
 )
-
-
-// Testing code
+~thirdPartials.value;
 ~thirdPartials.play;
-~thirdPartials.play(args: [\fundFreq, 400, \fundAmp, 0.3]);
-Server.killAll;
+~thirdPartials.play(args: [\fundFreq,1600, \fundAmp, 0.3]);
 
 /**************
  * Question 4 *
@@ -63,10 +54,17 @@ Server.killAll;
 
 (
 ~sawRampUp = {
-	// Your code here
-
+	arg fundFreq = 300, fundAmp = 0.3;
+    var numHarmonics = 30;
+    var sig = [0, 0];
+    for(1, numHarmonics, {
+        arg n; // harmonic number
+		sig = sig + (SinOsc.ar(fundFreq * n * -1, 0, fundAmp/n) ! 2)
+    });
+    sig // return value is the array for left/right speaker
 };
 )
+
 
 // Testing code
 ~sawRampUp.plot;
@@ -80,8 +78,8 @@ Server.killAll;
 (
 ~pulse = {
 	arg freq = 300, dutyCycle = 0.5, amp = 1;
-	// Your code here
-
+	var sig = LFSaw.ar(freq, 0, amp) - LFSaw.ar(freq, dutyCycle*2, amp);
+	sig!2
 }
 )
 
@@ -89,3 +87,5 @@ Server.killAll;
 ~pulse.plot;
 ~pulse.play;
 ~pulse.play(args: [\freq, 100, \dutyCycle, 0.2, \amp, 0.1]);
+
+

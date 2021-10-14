@@ -4,7 +4,8 @@ SynthDef(\oscillator, {
 	arg outBus, select = 0, freq = 440, duty = 0.5, noiseLevel = 0, lagTime = 0, octave = 4;
 	var a, whtnoise, cross, sel, output;
 
-	freq = (octave ** 2) * freq;
+	freq = (2**(octave-4)*freq);
+	freq = Lag2.kr(freq, lagTime);
 	a = [SinOsc.ar (freq),
 		LFTri.ar (freq),
 		Saw.ar (freq),
@@ -13,9 +14,9 @@ SynthDef(\oscillator, {
 	sel = Select.ar(select, a);
 	whtnoise = WhiteNoise.ar();
 	//combine a select and white noise
+	noiseLevel = (noiseLevel*2)-1 ;
 	cross = XFade2.ar(sel, whtnoise, noiseLevel);
-	output = Lag2.ar(sel, lagTime);
-	Out.ar(outBus, output * cross);
+	Out.ar(outBus, cross);
 }).add;
 
 SynthDef(\vcf, {
@@ -29,7 +30,7 @@ SynthDef(\vcf, {
 
 SynthDef(\vca, {
 	arg outBus, inBus, aTime = 0.01, dTime = 0.05, sLevel = 0.8,
-	rTime = 0.1, pLevel = 1, gate = 1;
+	rTime = 0.1, pLevel = 1, gate = 0;
 	var env, in;
 	in = In.ar(inBus);
 	env = Env.adsr(aTime, dTime, sLevel, rTime, pLevel);
@@ -42,31 +43,40 @@ SynthDef(\reverb, {
 	var in, verb;
 	in = In.ar(inBus);
 	verb = FreeVerb.ar(in, mix, room);
-	Out.ar (outBus, verb * in!2);
+	Out.ar (outBus, verb ! 2);
 }).add;
 
 ~start = {
 	"Synthesizers intialized".postln;
 	~group1 = Group(s);
-	~osc = Synth(\oscillator, target:~group1);
-	~vca = Synth(\vca, target: ~group1);
-	~vcf = Synth (\vcf, target:~group1);
-	~rev = Synth (\reverb, target:~group1);
+	//busses
+	~otovc = Bus.audio (s,1);
+	~vctovc = Bus.audio (s,1);
+	~vctovr = Bus.audio (s,1);
+	//~final = Bus.audio (s,1);
+	~osc = Synth(\oscillator, [\outBus, ~otovc], target:~group1);
+	~vca = Synth(\vca, [\inBus, ~otovc, \outBus, ~vctovc], target:~osc, addAction: \addAfter);
+	~vcf = Synth(\vcf, [\inBus, ~vctovc, \outBus, ~vctovr], target:~vca, addAction: \addAfter);
+	~verb = Synth(\reverb, [\inBus, ~vctovr, \outBus, 0], target:~vcf, addAction:\addAfter);
 };
+//CHECK THIS
 //add before or add after
+
+//~effect = Synth(\add200, [\out, 0, \in, ~bus]);
+//~sine = Synth(\sineArgsWithOut, [\out, ~bus, \freq, 1000]);
 
 ~free = {
 	"All synths freed from server and all busses freed".postln;
-	// Your code here
+	~group1.free;
 };
 )
 s.plotTree;
+CmdPeriod.run
 
 /***********
  * Testing *
  ***********/
 
-// Put any testing code here
 
 
 /********************************

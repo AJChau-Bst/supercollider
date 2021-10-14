@@ -108,8 +108,10 @@ SynthDef(\reverb, {
 ~pat7 = [[Rest(),1],[Rest(),1],[Rest(),1],[Rest(),0.5], [1, 0.25],[1,0.25],[1,0.5], [Rest(), 0.25], [Rest(), 0.5],[Rest(), 0.5], [Rest(),0.5], [Rest(), 0.5]];
 ~pat8 = [[5, 3],[4, 2], [4, 2]];
 ~pat50 = [[4,0.25],[5,0.25]];
-~pat51 = [[4,0.25],[5, 0.25],[6.5,0.25]];
-// SHARPS AND FLATS ARE WRONG, MUST MODIFY SCALE ARRAYS. WHAT ARE THOSE
+~pat51 = [[4, 0.25],[5,0.25],[7,0.25]];
+~pat52 = [[5,0.25],[7,0.25]];
+~pat53 = [[7,0.25], [5,0.25]];
+
 )
 
 /*************
@@ -153,37 +155,89 @@ Pbindef(
  * Create three other instruments for the piece and update their patterns
  * and arguments with Pbindefs.
  */
-
+(
 Pbindef(
   \perf_one,
   \instrument, \saw,
   \melody, Pseq(~pat1, inf),
-
   \degree, Pkey(\melody).collect({|pair| pair[0] - 1}),
+  \octave, 4,
+  \scale, [0,2,4,5,7,9,11],
   \dur, Pkey(\melody).collect({|pair| pair[1]}),
+).play(~clock, quant:1);
 )
-
+(
 Pbindef(
   \perf_two,
   \instrument, \saw,
   \melody, Pseq(~pat1, inf),
   \degree, Pkey(\melody).collect({|pair| pair[0] - 1}),
+  \octave, 3,
+  \scale, [0,2,4,5,7,9,11],
   \dur, Pkey(\melody).collect({|pair| pair[1]}),
+).play(~clock, quant:1);
 )
-
+(
 Pbindef(
   \perf_three,
   \instrument, \saw,
   \melody, Pseq(~pat1, inf),
   \degree, Pkey(\melody).collect({|pair| pair[0] - 1}),
+  \octave, 5,
+  \scale, [0,2,4,5,7,9,11],
   \dur, Pkey(\melody).collect({|pair| pair[1]}),
+  \amp, 0.1,
+).play(~clock, quant:1);
 )
+
+//Performer One
+Pbindef(\perf_one, \melody, Pseq(~pat3, inf))
+Pbindef(\perf_one, \melody, Pseq(~pat4, inf))
+Pbindef(\perf_one, \melody, Pseq(~pat5, inf))
+Pbindef(\perf_one, \melody, Pseq(~pat6, inf))
+Pbindef(\perf_one, \melody, Pseq(~pat7, inf))
+Pbindef(\perf_one, \melody, Pseq(~pat8, inf), \amp, Pwhite(0.1, 0.12))
+Pbindef(\perf_one, \melody, Pseq(~pat50, inf))
+Pbindef(\perf_one, \melody, Pseq(~pat51, inf),\scale, [0,2,4,5,7,9,10])
+Pbindef(\perf_one, \melody, Pseq(~pat52, inf),\scale, [0,2,4,5,7,9,10])
+Pbindef(\perf_one, \melody, Pseq(~pat53, inf),\scale, [0,2,4,5,7,9,10])
+//One-- Controls
+Pbindef(\perf_one, \amp, Pseq([0.1, 0.2, 0.3, 0.4, 0.4, 0.4, 0.3, 0.2, 0.1],inf))
+
+//Performer Two
+Pbindef(\perf_two, \melody, Pseq(~pat3, inf))
+Pbindef(\perf_two, \melody, Pseq(~pat4, inf))
+Pbindef(\perf_two, \melody, Pseq(~pat5, inf), \atk, 0.01)
+Pbindef(\perf_two, \melody, Pseq(~pat6, inf))
+Pbindef(\perf_two, \melody, Pseq(~pat7, inf))
+Pbindef(\perf_two, \melody, Pseq(~pat8, inf))
+Pbindef(\perf_two, \melody, Pseq(~pat50, inf), \sus, Pwhite(0.05, 0.1))
+Pbindef(\perf_two, \melody, Pseq(~pat51, inf),\scale, [0,2,4,5,7,9,10])
+Pbindef(\perf_two, \melody, Pseq(~pat52, inf),\scale, [0,2,4,5,7,9,10])
+Pbindef(\perf_two, \melody, Pseq(~pat53, inf),\scale, [0,2,4,5,7,9,10])
+//Two-- Controls
+Pbindef(\perf_two, \amp, Pseq([0.1, 0.2, 0.3, 0.4, 0.4, 0.4, 0.3, 0.2, 0.1],inf))
+
+//Performer Three
+Pbindef(\perf_three, \melody, Pseq(~pat3, inf))
+Pbindef(\perf_three, \melody, Pseq(~pat4, inf))
+Pbindef(\perf_three, \melody, Pseq(~pat5, inf))
+Pbindef(\perf_three, \melody, Pseq(~pat6, inf), \amp, Pseq[0.1, 0.2])
+Pbindef(\perf_three, \melody, Pseq(~pat7, inf))
+Pbindef(\perf_three, \melody, Pseq(~pat8, inf))
+Pbindef(\perf_three, \melody, Pseq(~pat50, inf))
+Pbindef(\perf_three, \melody, Pseq(~pat51, inf),\scale, [0,2,4,5,7,9,10])
+Pbindef(\perf_three, \melody, Pseq(~pat52, inf),\scale, [0,2,4,5,7,9,10])
+Pbindef(\perf_three, \melody, Pseq(~pat53, inf),\scale, [0,2,4,5,7,9,10])
+//Three-- Controls
+Pbindef(\perf_three, \amp, Pseq([0.1, 0.2, 0.3, 0.4, 0.4, 0.4, 0.3, 0.2, 0.1],inf))
 
 /***********
  * CLEANUP *
  ***********/
 CmdPeriod.run
 Pbindef.clear
+s.meter
 
 //Under the section “CLEANUP”, write a code block to stop the \cPulse pattern and remove all Pbindef references. Refer to your notes for help with the latter.
 

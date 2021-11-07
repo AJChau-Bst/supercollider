@@ -156,7 +156,7 @@ Pbindef(
  * and arguments with Pbindefs.
  */
 (
-Pbindef(
+~one = Pbindef(
   \perf_one,
   \instrument, \saw,
   \melody, Pseq(~pat1, inf),
@@ -180,7 +180,7 @@ Pbindef(
 (
 Pbindef(
   \perf_three,
-  \instrument, \saw,
+  \instrument, \tri,
   \melody, Pseq(~pat1, inf),
   \degree, Pkey(\melody).collect({|pair| pair[0] - 1}),
   \octave, 5,
@@ -195,47 +195,59 @@ Pbindef(\perf_one, \melody, Pseq(~pat3, inf))
 Pbindef(\perf_one, \melody, Pseq(~pat4, inf))
 Pbindef(\perf_one, \melody, Pseq(~pat5, inf))
 Pbindef(\perf_one, \melody, Pseq(~pat6, inf))
-Pbindef(\perf_one, \melody, Pseq(~pat7, inf))
+Pbindef(\perf_one, \melody, Pseq(~pat7, inf), \relTime, 0.025)
 Pbindef(\perf_one, \melody, Pseq(~pat8, inf), \amp, Pwhite(0.1, 0.12))
 Pbindef(\perf_one, \melody, Pseq(~pat50, inf))
 Pbindef(\perf_one, \melody, Pseq(~pat51, inf),\scale, [0,2,4,5,7,9,10])
 Pbindef(\perf_one, \melody, Pseq(~pat52, inf),\scale, [0,2,4,5,7,9,10])
 Pbindef(\perf_one, \melody, Pseq(~pat53, inf),\scale, [0,2,4,5,7,9,10])
 //One-- Controls
-Pbindef(\perf_one, \amp, Pseq([0.1, 0.2, 0.3, 0.4, 0.4, 0.4, 0.3, 0.2, 0.1],inf))
+Pbindef(\perf_one, \amp, Pseq([0.1, 0.2, 0.3, 0.3, 0.2, 0.1],inf))
+Pbindef(\perf_one, \amp, 0.05)
 
 //Performer Two
 Pbindef(\perf_two, \melody, Pseq(~pat3, inf))
 Pbindef(\perf_two, \melody, Pseq(~pat4, inf))
-Pbindef(\perf_two, \melody, Pseq(~pat5, inf), \atk, 0.01)
+Pbindef(\perf_two, \melody, Pseq(~pat5, inf), \atkTime, 0.01)
 Pbindef(\perf_two, \melody, Pseq(~pat6, inf))
 Pbindef(\perf_two, \melody, Pseq(~pat7, inf))
-Pbindef(\perf_two, \melody, Pseq(~pat8, inf))
+Pbindef(\perf_two, \melody, Pseq(~pat8, inf), \susLvl = 0.5)
 Pbindef(\perf_two, \melody, Pseq(~pat50, inf), \sus, Pwhite(0.05, 0.1))
 Pbindef(\perf_two, \melody, Pseq(~pat51, inf),\scale, [0,2,4,5,7,9,10])
 Pbindef(\perf_two, \melody, Pseq(~pat52, inf),\scale, [0,2,4,5,7,9,10])
 Pbindef(\perf_two, \melody, Pseq(~pat53, inf),\scale, [0,2,4,5,7,9,10])
 //Two-- Controls
-Pbindef(\perf_two, \amp, Pseq([0.1, 0.2, 0.3, 0.4, 0.4, 0.4, 0.3, 0.2, 0.1],inf))
+Pbindef(\perf_two, \amp, Pseq([0.1, 0.2, 0.3, 0.3, 0.2, 0.1],inf))
+Pbindef(\perf_one, \amp, 0.05)
+
 
 //Performer Three
 Pbindef(\perf_three, \melody, Pseq(~pat3, inf))
 Pbindef(\perf_three, \melody, Pseq(~pat4, inf))
 Pbindef(\perf_three, \melody, Pseq(~pat5, inf))
-Pbindef(\perf_three, \melody, Pseq(~pat6, inf), \amp, Pseq[0.1, 0.2])
-Pbindef(\perf_three, \melody, Pseq(~pat7, inf))
-Pbindef(\perf_three, \melody, Pseq(~pat8, inf))
+Pbindef(\perf_three, \melody, Pseq(~pat6, inf), \amp, Pseq([0.1, 0.2]))
+Pbindef(\perf_three, \melody, Pseq(~pat7, inf), \decTime, 0.1)
+Pbindef(\perf_three, \melody, Pseq(~pat8, inf), \cutoff_freq, Pseg([1000, 900, 800, 700],['lin', 'lin'],1))
 Pbindef(\perf_three, \melody, Pseq(~pat50, inf))
 Pbindef(\perf_three, \melody, Pseq(~pat51, inf),\scale, [0,2,4,5,7,9,10])
 Pbindef(\perf_three, \melody, Pseq(~pat52, inf),\scale, [0,2,4,5,7,9,10])
 Pbindef(\perf_three, \melody, Pseq(~pat53, inf),\scale, [0,2,4,5,7,9,10])
 //Three-- Controls
-Pbindef(\perf_three, \amp, Pseq([0.1, 0.2, 0.3, 0.4, 0.4, 0.4, 0.3, 0.2, 0.1],inf))
+Pbindef(\perf_three, \amp, Pseq([0.1, 0.2, 0.3, 0.3, 0.2, 0.1],inf))
+Pbindef(\perf_three, \amp, 0.05)
+
+//End
+(
+Pbindef(\perf_one, \amp, Pseg([0.1, 0], [10], ['lin', 'lin'], 1));
+Pbindef(\perf_two, \amp, Pseg([0.1, 0], [10], ['lin', 'lin'], 1));
+Pbindef(\perf_three, \amp, Pseg([0.1, 0], [10], ['lin', 'lin'], 1));
+Pbindef(\cPulse, \amp, Pseg([0.1, 0], [10], ['lin', 'lin'], 1));
+
+)
 
 /***********
  * CLEANUP *
  ***********/
-CmdPeriod.run
 Pbindef.clear
 s.meter
 

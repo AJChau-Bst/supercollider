@@ -67,11 +67,6 @@ Synth(\fmEnv, [
 )
 
 //[77, 80, 84]
-//Questions for Andy:
-//How do I change the Harmonicity Ratio/Modulation Index
-// \modIndex
-// \harm
-//What "Patterns" am I required to have? is Pbind a pattern?
 //Pshuf (shuffles a list)
 (
 Pbind(
@@ -98,6 +93,16 @@ Pbind(
   \amp, 2
 ).play(~clock, quant:1);
 )
+
+(
+Pbind(
+  \instrument, \fmEnv,
+  \dur, 1,
+  \midinote, Pshuf([[60, 63, 67], [62, 65, 68], [63, 67, 70]],inf)
+  \amp, 2
+).play(~clock, quant:1);
+)
+
 
 
 /**************
@@ -141,8 +146,7 @@ SynthDef(\bass1, {
 	osc3 = SinOsc.ar(freq * 0.5, osc4) * env3;
 	osc6 = SinOsc.ar(freq * 9, SinOscFB.ar(feedback:7)) * env6;
 	osc5 = SinOsc.ar(freq * 0.5, osc6) * env5;
-	osc1 = SinOsc.ar(osc2 + osc3 + osc5, mul: 20) * env1;
-	//amplitude changed above to be able to hear the sound
+	osc1 = SinOsc.ar(freq, osc2 + osc3 + osc5) * env1;
 	Out.ar(0, osc1);
 }).add;
 )

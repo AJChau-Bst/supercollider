@@ -1,7 +1,7 @@
 /*
  * ASSIGNMENT: Filters and Delay
  ********************************
- * Name(s):
+ * Name(s): Annette Chau
  */
 
 /***********
@@ -38,13 +38,22 @@ SynthDef(\play, {
 Synth(\play, [\bufnum, ~guitarBuf]);
 
 // Build the flanger here
+
 (
 SynthDef(\flanger, {
 	arg in, out = 0, depth = 1, rate = 0.5, sweep = 0.0045, centerDelay = 0.005, amp = 1;
-	// Your code here
+	var sig, delay, wave;
+
+	sig = In.ar(in, 1);
+	wave = SinOsc.kr(rate, mul:sweep, add:centerDelay);
+	// Eqn of Wave: 0.0045 sin(x)+0.005
+	delay = DelayL.ar(in: sig, delaytime: wave);
+	sig = delay * depth + sig;
+	Out.ar(out, sig);
 
 }).add;
 )
+// put sin wave into delayL to input a varying delaytime to modulate the sound
 
 // Establish a bus to route incoming sound into the flanger
 (
@@ -72,10 +81,11 @@ SynthDef(\vocoder, {
 	arg out = 0, modulatorInBus, carrierInBus, amp = 0.5,  q = 50;
 
 	var lowestFreq = 300, highestFreq = 8000, numFilters = 41, boost = 20;
-	var sig, car, mod;
+	var sig, car, mod, ratio, centerFreq;
 
 	// Write two lines of code to read in the modulator signal and the carrier signal
-
+	mod = In.ar(modulatorInBus,2);
+	car = In.ar(carrierInBus, 2);
 
 	// This is an accumulation pattern where we will build up the resulting signal
 	// so initialize it to zero.
@@ -87,31 +97,43 @@ SynthDef(\vocoder, {
 	// the carrier's filter is added to the outputted signal.
 	numFilters.do({
 		arg filterNum;
+		var bandpasscar, bandpassmod, trkamp;
 
 		// Find the ratio of the center frequencies between each bandpass filter.
-		// YOUR CODE HERE
+		ratio = (highestFreq/lowestFreq)**(1/(numFilters-1));
 
 
 		// Calculate the center frequency of the current bandpass filter
 		// based on the filter number and the ratio.
 		// YOUR CODE HERE
 
+		centerFreq = lowestFreq * (ratio ** filterNum);
 
 		// Track the amplitude of the modulating signal using Amplitude.ar
 		// and BPF.ar.
 		// YOUR CODE HERE
 
 
+		bandpassmod = BPF.ar(in: mod, freq: centerFreq, rq: 1/q);
+		bandpasscar = BPF.ar(in: car, freq: centerFreq, rq: 1/q);
+		trkamp = Amplitude.ar(in: bandpassmod);
+
 		// Using the tracked amplitude, scale a BPF applied to the carrier
 		// signal and add the output to the variable sig.  You should also
 		// scale the signal by the boost as BPF with a high Q are often quite soft.
 		// YOUR CODE HERE
+
+		bandpasscar = bandpasscar * trkamp * boost;
+		sig = bandpasscar + sig;
+
 
 	});
 
 	// Write a line of code to output the signal.  The resulting signal should be
 	// scaled by the amplitude and by the boost.
 	// YOUR CODE HERE
+
+	Out.ar(out, sig * boost * amp);
 
 }).add;
 )
